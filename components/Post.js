@@ -15,7 +15,7 @@ import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverT
 import { db } from '../firebase';
 import Moment from 'react-moment';
 
-function Post({ id, username, img, userImg, caption }) {
+function Post({ id, username, userImg, caption, song, artist, img}) {
     const {data:session} = useSession();
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
@@ -52,9 +52,9 @@ function Post({ id, username, img, userImg, caption }) {
 
     const likePost = async () => {
         if (hasLiked) {
-            await deleteDoc(doc(db, 'posts', id, 'likes', session.user.uid))
+            await deleteDoc(doc(db, 'posts', id, 'likes', session.user.email))
         } else {
-            await setDoc(doc(db, 'posts', id, 'likes', session.user.uid), {
+            await setDoc(doc(db, 'posts', id, 'likes', session.user.email), {
                 username: session.user.username
             });
         }
@@ -62,12 +62,10 @@ function Post({ id, username, img, userImg, caption }) {
 
     useEffect(() => 
         setHasLiked(
-            likes.findIndex((like) => like.id === session?.user?.uid) !== -1
+            likes.findIndex((like) => like.id === session?.user?.email) !== -1
     ),
     [likes]
     );
-
-    console.log("HELLLOO: " + img);
 
     return (
         <div className='bg-white my-7 border rounded-sm'>

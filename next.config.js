@@ -2,6 +2,6 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ['links.papareact.com', 'static.wikia.nocookie.net'],
+    domains: ['static.wikia.nocookie.net'],
   },
 }

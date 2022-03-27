@@ -4,6 +4,7 @@ import {useSession} from "next-auth/react"
 import TopTracks from './TopTracks';
 import Artists from './Artists';
 import TopArtists from './TopArtists';
+import Posts from './Posts';
 
 function Feed() {
 
@@ -15,6 +16,7 @@ function Feed() {
         
         <section className="col-span-2">
             <TopArtists />
+            <Posts />
         </section>
     
     {session && (

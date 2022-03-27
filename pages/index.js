@@ -3,6 +3,7 @@ import Feed from '../components/Feed';
 import Head from 'next/head'
 import Modal from '../components/Modal';
 
+
 export default function Home() {
   return (
 

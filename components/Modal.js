@@ -9,11 +9,15 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../atoms/modalAtom.js';
 import { db, storage } from "../firebase";
 import { ref, getDownloadURL, uploadString } from "@firebase/storage";
-import SearchDropDown from './SearchDropDown';
 import axios from 'axios';
+import { ToggleButton } from '@mui/material';
 import {
     SearchIcon,
-  } from "@heroicons/react/outline"
+  } from "@heroicons/react/outline";
+  import {
+    PlayIcon,
+    PauseIcon,
+    } from "@heroicons/react/solid"
 import useSpotify from '../hooks/useSpotify.js';
 
 function Modal() {
@@ -23,39 +27,47 @@ function Modal() {
     const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
     const filePickerRef = useRef(null);
-    const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedSong, setSelectedSong] = useState(null);
     const captionRef = useRef(null);
     const [searchKey, setSearchKey] = useState("");
-
     const [searchSongs, setSearchSongs] = useState([]);
+    const [isSearchable, setIsSearchable] = useState([]);
+
+    const [playing, setPlaying] = useState(false);
+
+    const [previewSong, setPreviewSong] = useState([]);
+    
+    const [postImage, setPostImage] = useState([]);
+    const [postName, setPostName] = useState([]);
+    const [postArtist, setPostArtist] = useState([]);
+
+    var audio;
 
     const search = async (e) => {
         e.preventDefault();
         if (session) {
             if (spotifyApi.getAccessToken()) {
                 try {
-                    spotifyApi.searchTracks(searchKey).then((data) => {
+                    if (searchKey.length != 0) {
+                        setSearchKey("track:" + searchKey.substring(0, searchKey.indexOf(" ")) + " artist:" + searchKey.substring(searchKey.indexOf(" ", searchKey.length)));
+                        spotifyApi.searchTracks(searchKey,{ limit: 10 }).then((data) => {
                         setSearchSongs(data.body.tracks.items);
-                        console.log(searchSongs);
-                    });
+                        });  
+                    }
                 } catch (error) {
-                    console.log(error);
+                    isSearchable = false;
                 }
                 }
         }
         console.log(searchSongs);
     }
 
-
-    const addImageToPost = (e) => {
-        const reader = new FileReader();
-        if (e.target.files[0]) {
-            reader.readAsDataURL(e.target.files[0]);
-        }
-        reader.onload = (readerEvent) => {
-            setSelectedFile(readerEvent.target.result);
+    const playSong = (e) => {
+        if (previewSong != null) {
+            audio = new Audio(previewSong);
+            audio.paused ? audio.play() : audio.pause();
         };
-    };
+    }
 
     const uploadPost = async () => {
         if (loading) return;
@@ -65,24 +77,20 @@ function Modal() {
             username: session.user.username,
             caption: captionRef.current.value,
             profileImg: session.user.image,
-            timestamp: serverTimestamp()
+            timestamp: serverTimestamp(),
+            song: postName,
+            artist:postArtist,
+            songPic: postImage,
         })
         console.log("New doc added with ID ", docRef.id);
 
-        const imageRef = ref(storage, `posts/${docRef.id}/image`);
-        await uploadString(imageRef, selectedFile, "data_url").then(async snapshot => {
-            const downloadURL = await getDownloadURL(imageRef);
-            await updateDoc(doc(db, 'posts', docRef.id), {
-                image: downloadURL
-            })
-        });
         setOpen(false);
         setLoading(false);
-        setSelectedFile(null);
+        setSelectedSong(null);
     }
 
-    // console.log(searchKey);
-    // console.log(searchSongs);
+    console.log(searchKey);
+    console.log(searchSongs);
     
     return <Transition.Root show={open} as={Fragment}>
         <Dialog
@@ -122,31 +130,46 @@ function Modal() {
                 >
                     <div className="inline-block align-bottom bg-white rounded-lg px-4pb-4
                 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle
-                sm:max-w-sm sm:w-full sm:p-6">
+                sm:max-w-lg sm:w-full sm:p-6">
                         <div>
+                        <div className="max-w-lg">
                             <div className="relative mt-1 p-3 rounded-md"> 
-                                <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
+                                <div className="absolute inset-y-0 pl-3 pt-3 pointer-events-none">
                                     <SearchIcon className="h-5 w-5 text-gray-500" />
                                 </div>
                                 <form onSubmit={search}> 
                                     <input className="bg-gray-50 block w-full pl-10 sm:text-sm
                                     border-gray-300 focus:ring-black focus:border-black rounded-md" 
-                                    type="text"
-                                    onChange={e => setSearchKey(e.target.value)}
+                                    onChange={e => {setSearchKey(e.target.value);}}
                                     placeholder="Search a song"/>
-                                    <SearchDropDown list={searchSongs}/>
                                 </form>
+                                    <div className ="mt-4">
+                                    {searchSongs.map(songs =>(
+                                        <div className="flex justify-between mt-3 hover:bg-green-400 cursor-pointer hover:Scale-125 transition-all duration-150 rounded-md">
+                                        <ToggleButton className="flex-1" onClick={e => 
+                                            {setPreviewSong(songs.preview_url); 
+                                            setPostImage(songs.album.images[0].url);
+                                            setPostName(songs.name);
+                                            setPostArtist(songs.artists[0].name);
+                                            setSelectedSong(true);
+                                            }}>
+                                        <div className="flex-1 items-center">
+                                            <div key = {songs.id} className="flex items-center justify-between" onClick={e => {setSearchKey(songs.id);}}>
+                                                <img className='w-12 h-12 border p-[2px] align' src={songs.album.images[0].url}  alt ="" />
+                                                <div className ="flex-1 ml-4 ">
+                                                    <h2 className="text-black text-sm"> {songs.name} </h2>  
+                                                    <h3 className= "text-xs text-black"> by {songs.artists[0].name} </h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        </ToggleButton>
+                                        </div>
+                                    ))}
+                                </div>
+
+                            </div>
                             </div>
                             <div>
-
-                                <div>
-                                    <input
-                                        ref={filePickerRef}
-                                        type="file"
-                                        hidden
-                                        onChange={addImageToPost}
-                                    />
-                                </div>
 
                                 <div className="mt-2">
                                     <input
@@ -159,7 +182,7 @@ function Modal() {
                             </div>
                             <div className="mt-5 sm:mt-6">
                                 <button type="button"
-                                    disabled={!selectedFile}
+                                    disabled={!selectedSong}
                                     className="inline-flex justify-center w-full rounded-md border border-transparent
                             shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white
                             hover:bg-red-700 focus:outline-none focus-ring-2 focus:ring-offset-2

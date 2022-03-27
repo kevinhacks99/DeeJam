@@ -22,9 +22,11 @@ return (
           key = {post.id} 
           id={post.id}
           username = {post.data().username} 
-          img = {post.data().image}
           userImg = {post.data().profileImg} 
           caption = {post.data().caption}
+          song = {post.data().song}
+          artist = {post.data().artist}
+          img = {post.data().songPic}
           />
       ))}
   </div>
