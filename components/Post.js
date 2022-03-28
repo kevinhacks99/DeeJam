@@ -103,10 +103,10 @@ function Post({ id, username, userImg, caption, song, artist, img}) {
                 {likes.length > 0 && (
                     <p className='font-bold mb-1'> {likes.length} likes </p>
                 )}
+                <p className='font-bold mr-1'> {song} by {artist} </p>
                 <span className='font-bold mr-1'> {username} </span>
                 {caption}
             </p>
-
             {/* comments */}
             {comments.length > 0 && (
                 <div className="ml-10 h-20 overflow-y-scroll scrollbar-thumb-black scrollbar-thin"> 

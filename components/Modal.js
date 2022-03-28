@@ -26,17 +26,11 @@ function Modal() {
     const [open, setOpen] = useRecoilState(modalState);
     const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
-    const filePickerRef = useRef(null);
     const [selectedSong, setSelectedSong] = useState(null);
     const captionRef = useRef(null);
     const [searchKey, setSearchKey] = useState("");
     const [searchSongs, setSearchSongs] = useState([]);
-    const [isSearchable, setIsSearchable] = useState([]);
-
-    const [playing, setPlaying] = useState(false);
-
     const [previewSong, setPreviewSong] = useState([]);
-    
     const [postImage, setPostImage] = useState([]);
     const [postName, setPostName] = useState([]);
     const [postArtist, setPostArtist] = useState([]);
@@ -55,7 +49,7 @@ function Modal() {
                         });  
                     }
                 } catch (error) {
-                    isSearchable = false;
+                    console.log(error);
                 }
                 }
         }
@@ -88,9 +82,6 @@ function Modal() {
         setLoading(false);
         setSelectedSong(null);
     }
-
-    console.log(searchKey);
-    console.log(searchSongs);
     
     return <Transition.Root show={open} as={Fragment}>
         <Dialog
@@ -118,7 +109,6 @@ function Modal() {
                 <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
                     &#8203;
                 </span>
-
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"
@@ -166,11 +156,9 @@ function Modal() {
                                         </div>
                                     ))}
                                 </div>
-
                             </div>
                             </div>
                             <div>
-
                                 <div className="mt-2">
                                     <input
                                         className="border-none focus:ring-0 w-full text-center"

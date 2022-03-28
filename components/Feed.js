@@ -15,6 +15,8 @@ function Feed() {
     xl:max-w-6xl mx-auto ${!session && "!grid-cols-1 !max-w-3xl"}`}>
         
         <section className="col-span-2">
+
+          
             <TopArtists />
             <Posts />
         </section>
