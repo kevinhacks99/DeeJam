@@ -34,7 +34,10 @@ function Header() {
   return (
     <div className="shadow-sm border-b bg-white stick top-0 z-50"> 
         <div className="flex justify-between max-w-6xl mx-5 xl:mx-auto">
+            <div className=""> 
               <h1 className='pt-4 text-center relative hidden lg:inline-grid h-16 w-24 font-bold text-2xl'> 𝓓𝓮𝓮𝓙𝓪𝓶 </h1> 
+              <h2 className="text-s text-gray-400"> by Kevin Tang </h2>
+            </div>
             <div onClick={() => router.push('/')} className='relative w-16 h-18 lg:hidden flex-shrink-0 cursor-pointer'>
                 <Image src="https://static.wikia.nocookie.net/pixel-gun-3d/images/6/6e/Mr._Deejay.png/revision/latest?cb=20181006104406" 
                 layout="fill" 
