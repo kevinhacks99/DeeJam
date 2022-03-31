@@ -68,8 +68,8 @@ function Header() {
           {session ? (
             <>
           <PlusCircleIcon onClick={() => setOpen(true)} className="navButton"/>
-          <UserGroupIcon className="navButton" />
-          <HeartIcon className="navButton" />
+          {/* <UserGroupIcon className="navButton" />
+          <HeartIcon className="navButton" /> */}
 
           <img onClick={signOut} src={session?.user?.image}
           alt="profile pic" className="navButton w-14 h-14 rounded-full cursor-pointer" />
