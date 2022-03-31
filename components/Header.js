@@ -36,7 +36,6 @@ function Header() {
         <div className="flex justify-between max-w-6xl mx-5 xl:mx-auto">
             <div className=""> 
               <h1 className='pt-4 text-center relative hidden lg:inline-grid h-16 w-24 font-bold text-2xl'> 𝓓𝓮𝓮𝓙𝓪𝓶 </h1> 
-              <h2 className="text-s text-gray-400"> by Kevin Tang </h2>
             </div>
             <div onClick={() => router.push('/')} className='relative w-16 h-18 lg:hidden flex-shrink-0 cursor-pointer'>
                 <Image src="https://static.wikia.nocookie.net/pixel-gun-3d/images/6/6e/Mr._Deejay.png/revision/latest?cb=20181006104406" 
@@ -45,7 +44,7 @@ function Header() {
                 />
             </div>
 
-        <div className="max-w-xs">
+        {/* <div className="max-w-xs">
           <div className="relative mt-1 p-3 rounded-md"> 
             <div className="absolute inset-y-0 pl-3 flex items-center pointer-events-none">
                 <SearchIcon className="h-5 w-5 text-gray-500" />
@@ -60,7 +59,7 @@ function Header() {
             </form>
 
           </div>
-        </div>
+        </div> */}
 
         <div className="flex items-center justify-end space-x-4"> 
           <HomeIcon onClick={() => router.push('/')} className="navButton" />
@@ -80,6 +79,7 @@ function Header() {
           )}
         </div>
         </div>
+
     </div>
   );
 }

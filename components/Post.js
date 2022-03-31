@@ -14,13 +14,31 @@ import { useState, useEffect } from "react";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, orderBy, query, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import Moment from 'react-moment';
+import useSpotify from '../hooks/useSpotify.js';
 
-function Post({ id, username, userImg, caption, song, artist, img}) {
+function Post({ id, username, userImg, caption, song, artist, img, externalSongURL, songID}) {
     const {data:session} = useSession();
     const [comment, setComment] = useState("");
     const [comments, setComments] = useState([]);
     const [likes, setLikes] = useState([]);
     const [hasLiked, setHasLiked] = useState(false);
+    
+    const spotifyApi = useSpotify();
+
+    const addToSavedTracks = async (e) => {
+        e.preventDefault();
+        if (session) {
+            if (spotifyApi.getAccessToken()) {
+                try {
+                        spotifyApi.addToMySavedTracks([songID]).then((data) => {
+                            console.log("Added track to saved")
+                        });  
+                } catch (error) {
+                    console.log(error);
+                }
+                }
+        }
+    }
 
     useEffect(
         () => onSnapshot(
@@ -67,6 +85,8 @@ function Post({ id, username, userImg, caption, song, artist, img}) {
     [likes]
     );
 
+
+
     return (
         <div className='bg-white my-7 border rounded-sm'>
 
@@ -92,9 +112,13 @@ function Post({ id, username, userImg, caption, song, artist, img}) {
                             )
                         }
                         <ChatIcon className="btn" />
-                        <PaperAirplaneIcon className="btn" />
+                        <a href={externalSongURL} type="button" className="btn" >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                        </svg>
+                        </a>
                     </div>
-                    <BookmarkIcon className='btn' />
+                    <BookmarkIcon className='btn' onClick={addToSavedTracks} />
                 </div>
             )}
 

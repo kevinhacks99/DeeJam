@@ -34,6 +34,8 @@ function Modal() {
     const [postImage, setPostImage] = useState([]);
     const [postName, setPostName] = useState([]);
     const [postArtist, setPostArtist] = useState([]);
+    const [externalSongURL, setExternalSongURL] = useState([]);
+    const [songID, setSongID] = useState([]);
 
     var audio;
 
@@ -75,6 +77,8 @@ function Modal() {
             song: postName,
             artist:postArtist,
             songPic: postImage,
+            externalSongURL: externalSongURL,
+            songID: songID,
         })
         console.log("New doc added with ID ", docRef.id);
 
@@ -137,7 +141,11 @@ function Modal() {
                                     {searchSongs.map(songs =>(
                                         <div className="flex justify-between mt-3 hover:bg-green-400 cursor-pointer hover:Scale-125 transition-all duration-150 rounded-md">
                                         <ToggleButton className="flex-1" onClick={e => 
-                                            {setPreviewSong(songs.preview_url); 
+                                            {console.log(songs);
+                                            setSongID(songs.id);
+                                            console.log(songs.external_urls.spotify);
+                                            setExternalSongURL(songs.external_urls.spotify);
+                                            setPreviewSong(songs.preview_url); 
                                             setPostImage(songs.album.images[0].url);
                                             setPostName(songs.name);
                                             setPostArtist(songs.artists[0].name);

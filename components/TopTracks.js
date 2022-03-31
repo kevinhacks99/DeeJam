@@ -11,11 +11,11 @@ function TopTracks() {
   
   const {data:session} = useSession();
   const [isPlaying, setIsPlaying] = useState(false);
-  const [hasLiked, setHasLiked] = useState(false);
+  
   useEffect(() => {
       if (session) {
           if (spotifyApi.getAccessToken()) {
-              spotifyApi.getMyTopTracks().then((data) => {
+              spotifyApi.getMyTopTracks({ limit: 15 }).then((data) => {
                   setMyTopTracks(data.body.items);
               });
               }

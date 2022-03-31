@@ -27,6 +27,8 @@ return (
           song = {post.data().song}
           artist = {post.data().artist}
           img = {post.data().songPic}
+          externalSongURL = {post.data().externalSongURL}
+          songID = {post.data().songID}
           />
       ))}
   </div>
